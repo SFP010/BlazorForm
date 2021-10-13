@@ -1,0 +1,86 @@
+@page "/PatientForm"
+
+@using Data 
+@inject BlazorForm.Data.PatientDbContext _context
+
+<EditForm Model="@patient" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+    @* <ValidationSummary /> *@
+
+    <div class="form-group">
+        <label for="@nameof(patient.FirstName)">@nameof(patient.FirstName)</label>
+        <InputText id="@nameof(patient.FirstName)" @bind-Value="patient.FirstName" class="form-control"/>
+        <ValidationMessage For="@(() => patient.FirstName)" />
+    </div>
+
+    <div class="form-group">
+        <label for="@nameof(patient.LastName)">@nameof(patient.LastName)</label>
+        <InputText id="@nameof(patient.LastName)" @bind-Value="patient.LastName" class="form-control"/>
+        <ValidationMessage For="@(() => patient.LastName)" />
+    </div>
+
+    <div class="form-group">
+        <label for="@nameof(patient.BirthDate)">@nameof(patient.BirthDate)</label>
+        <InputDate id="@nameof(patient.BirthDate)" @bind-Value="patient.BirthDate" class="form-control"/>
+        <ValidationMessage For="@(() => patient.BirthDate)" />
+    </div>
+
+    <div class="form-group">
+        <label for="@nameof(patient.Gender)">@nameof(patient.Gender)</label>
+        <InputSelect id="@nameof(patient.Gender)" @bind-Value="patient.Gender" class="form-control">
+            <option value="">-- Select --</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="They/Them">They/Them</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => patient.Gender)" />
+    </div>
+
+    <div class="form-group">
+        <label for="@nameof(patient.Email)">@nameof(patient.Email)</label>
+        <InputText id="@nameof(patient.Email)" @bind-Value="patient.Email" class="form-control" />
+        <ValidationMessage For="@(() => patient.Email)" />
+    </div>
+
+    <div class="form-group">
+        <label for="@nameof(patient.PhoneNumber)">@nameof(patient.PhoneNumber)</label>
+        <InputText id="@nameof(patient.PhoneNumber)" @bind-Value="patient.PhoneNumber" class="form-control" />
+        <ValidationMessage For="@(() => patient.PhoneNumber)" />
+    </div>
+
+    <div class="form-group form-check">
+        <label for="@nameof(patient.Identification)" class="form-check-label">@nameof(patient.Identification) </label>
+        <InputCheckbox id="@nameof(patient.Identification)" @bind-Value="patient.Identification" class="form-check-input" />
+        <ValidationMessage For="@(() => patient.Identification)" />
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+
+@code
+{
+    private Patient patient = new Patient();
+    
+
+    private async void HandleValidSubmit()
+    {
+        try
+        {
+            _context.Patient.Add(patient);
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+        patient = new Patient();
+        base.StateHasChanged();
+    }
+    private void HandleInvalidSubmit()
+    {
+        Console.WriteLine("You failed.");
+    }
+
+}
+
